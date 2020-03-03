@@ -169,20 +169,21 @@ namespace SmartRecorder
 
         private void WriteErrorLog(Exception ex, string nonExceptionMessage = null, bool messageRequired = true, bool shutDownRequired = true)
         {
-            if (!File.Exists("Log.txt"))
+            var directoryPath = Path.Combine(Path.GetTempPath(), "Smart Structures", "Smart Recorder");
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+            var logPath = Path.Combine(directoryPath, "Log.txt");
+            if (!File.Exists(logPath))
             {
-                File.Create("Log.txt").Dispose();
+                File.Create(logPath).Dispose();
             }
-
-
-            using (StreamWriter writer = File.AppendText("Log.txt"))
+            using (StreamWriter writer = File.AppendText(logPath))
             {
                 if (ex != null)
                 {
                     if (messageRequired)
                         MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
                     writer.WriteLine(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message);
-
                 }
                 if (!string.IsNullOrEmpty(nonExceptionMessage))
                 {
@@ -190,7 +191,6 @@ namespace SmartRecorder
                         MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + nonExceptionMessage, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
                     writer.WriteLine(DateTime.UtcNow + " - " + "non-exception" + " - " + nonExceptionMessage);
                 }
-
             }
             if (shutDownRequired)
             {
