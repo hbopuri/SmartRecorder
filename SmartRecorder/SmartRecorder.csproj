@@ -133,8 +133,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\AForge.Video.FFMPEG.dll" />
+    <Content Include="Lib\avcodec-53.dll" />
+    <Content Include="Lib\avdevice-53.dll" />
+    <Content Include="Lib\avfilter-2.dll" />
+    <Content Include="Lib\avformat-53.dll" />
+    <Content Include="Lib\avutil-51.dll" />
+    <Content Include="Lib\postproc-52.dll" />
+    <Content Include="Lib\swresample-0.dll" />
+    <Content Include="Lib\swscale-2.dll" />
     <Resource Include="ss_icon.ico" />
     <Resource Include="Lib\AForge.Video.FFMPEG.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>copy "$(ProjectDir)Lib\"  "$(ProjectDir)$(OutDir)"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
