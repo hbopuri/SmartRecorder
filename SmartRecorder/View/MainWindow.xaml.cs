@@ -50,8 +50,7 @@ namespace SmartRecorder
 
                 if (!Directory.Exists(_fileBasePath))
                 {
-                    WriteErrorLog(null, "Video file path not configured! - " + _fileBasePath);
-                    return;
+                    WriteErrorLog(null, "Video file path not configured! - " + _fileBasePath, false, false);
                 }
 
                 try
@@ -60,8 +59,10 @@ namespace SmartRecorder
                 }
                 catch
                 {
-                    WriteErrorLog(null, "There is no subfolder inside appdata folder! - " + _fileBasePath);
-                    return;
+                    WriteErrorLog(null, "There is no subfolder inside appdata folder! - " + _fileBasePath, false, false);
+                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
+                    if (!Directory.Exists(fileDirPath))
+                        Directory.CreateDirectory(fileDirPath);
                 }
 
                 if (_videoCaptureDevices.Count == 0)
@@ -166,7 +167,7 @@ namespace SmartRecorder
             }
         }
 
-        private void WriteErrorLog(Exception ex, string nonExceptionMessage = null)
+        private void WriteErrorLog(Exception ex, string nonExceptionMessage = null, bool messageRequired = true, bool shutDownRequired = true)
         {
             if (!File.Exists("Log.txt"))
             {
@@ -178,19 +179,24 @@ namespace SmartRecorder
             {
                 if (ex != null)
                 {
-                    MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (messageRequired)
+                        MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
                     writer.WriteLine(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message);
 
                 }
                 if (!string.IsNullOrEmpty(nonExceptionMessage))
                 {
-                    MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + nonExceptionMessage, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (messageRequired)
+                        MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + nonExceptionMessage, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
                     writer.WriteLine(DateTime.UtcNow + " - " + "non-exception" + " - " + nonExceptionMessage);
                 }
 
             }
-
-            Application.Current.Shutdown(110);
+            if (shutDownRequired)
+            {
+                if (Application.Current != null)
+                    Application.Current.Shutdown(110);
+            }
         }
     }
 
