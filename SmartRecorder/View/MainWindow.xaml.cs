@@ -30,15 +30,8 @@ namespace SmartRecorder
 
         public MainWindow()
         {
-            try
-            {
-                InitializeComponent();
-                Loaded += MainWindow_Loaded;
-            }
-            catch (Exception ex)
-            {
-                WriteErrorLog(ex);
-            }
+            InitializeComponent();
+            Loaded += MainWindow_Loaded;
         }
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -46,23 +39,28 @@ namespace SmartRecorder
             {
                 string cameraName = ConfigurationManager.AppSettings["CameraName"].ToString();
                 string fileDirPath = null;
+                string ssnFileName = null;
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
                 if (!Directory.Exists(_fileBasePath))
                 {
                     WriteErrorLog(null, "Video file path not configured! - " + _fileBasePath, false, false);
+                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
+                    if (!Directory.Exists(fileDirPath))
+                        Directory.CreateDirectory(fileDirPath);
+                }
+                else
+                {
+                    fileDirPath = _fileBasePath;
                 }
 
                 try
                 {
-                    fileDirPath = new DirectoryInfo(_fileBasePath).GetDirectories().OrderByDescending(d => d.LastWriteTimeUtc).First().FullName;
+                    ssnFileName = Path.GetFileNameWithoutExtension(new DirectoryInfo(_fileBasePath).GetFiles("*.ssn").OrderByDescending(o => o.LastWriteTime).FirstOrDefault().Name);
                 }
                 catch
                 {
-                    WriteErrorLog(null, "There is no subfolder inside appdata folder! - " + _fileBasePath, false, false);
-                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
-                    if (!Directory.Exists(fileDirPath))
-                        Directory.CreateDirectory(fileDirPath);
+                    WriteErrorLog(null, ".ssn file not exists! - " + _fileBasePath, false, false);
                 }
 
                 if (_videoCaptureDevices.Count == 0)
@@ -89,9 +87,13 @@ namespace SmartRecorder
                 _stopWatch.Start();
                 _videoCaptureDevice.Start();
 
+                if (ssnFileName == null)
+                    ssnFileName = string.Empty;
+                else
+                    ssnFileName = ssnFileName + "_";
 
-                string filePath = Path.Combine(fileDirPath, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() + ".avi");
-                _fileWriter.Open(filePath, 1280, 720, 25, VideoCodec.Default, 5000000);
+                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".mp4");
+                _fileWriter.Open(filePath, 1280, 720, 25, VideoCodec.MPEG4, 500000);
             }
             catch (Exception ex)
             {
@@ -130,15 +132,7 @@ namespace SmartRecorder
                         if (elapsedTimeInSeconds >= timeBetweenFramesInSeconds)
                         {
                             _stopWatch.Restart();
-                            try
-                            {
-                                _fileWriter.WriteVideoFrame(eventArgs.Frame, frameOffset);
-                            }
-                            catch (Exception ex)
-                            {
-                                WriteErrorLog(ex);
-                                return;
-                            }
+                            _fileWriter.WriteVideoFrame(eventArgs.Frame, frameOffset);
                         }
                     }
                 }
@@ -163,7 +157,6 @@ namespace SmartRecorder
             catch (Exception ex)
             {
                 WriteErrorLog(ex);
-                return;
             }
         }
 
