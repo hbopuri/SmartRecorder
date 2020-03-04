@@ -71,7 +71,6 @@ namespace SmartRecorder
                 if (_videoCaptureDevices.Count == 0)
                 {
                     WriteErrorLog(null, "No camera Attached.");
-                    return;
                 }
 
                 for (int i = 0; i < _videoCaptureDevices.Count; i++)
@@ -83,9 +82,8 @@ namespace SmartRecorder
                 if (_videoCaptureDevice == null)
                 {
                     WriteErrorLog(null, "No camera with name " + cameraName + " attached!");
-                    return;
                 }
-
+                _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[8];
                 _videoCaptureDevice.NewFrame += new NewFrameEventHandler(video_NewFrame);
                 _recording = true;
                 _stopWatch = new Stopwatch();
@@ -95,13 +93,14 @@ namespace SmartRecorder
 
                 ssnFileName = ssnFileName + "_";
 
-                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".mp4");
-                _fileWriter.Open(filePath, 1280, 720, 25, VideoCodec.MPEG4, 500000);
+                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".avi");
+                _fileWriter.Open(filePath, _videoCaptureDevice.VideoResolution.FrameSize.Width,
+                    _videoCaptureDevice.VideoResolution.FrameSize.Height,
+                    _videoCaptureDevice.VideoResolution.AverageFrameRate, VideoCodec.MSMPEG4v3, 30);
             }
             catch (Exception ex)
             {
                 WriteErrorLog(ex);
-                return;
             }
         }
 
@@ -109,7 +108,7 @@ namespace SmartRecorder
         {
             try
             {
-                Image img = (Bitmap)eventArgs.Frame.Clone();
+                Bitmap img = (Bitmap)eventArgs.Frame.Clone();
                 MemoryStream ms = new MemoryStream();
                 {
                     img.Save(ms, ImageFormat.Bmp);
@@ -142,8 +141,7 @@ namespace SmartRecorder
             }
             catch (Exception ex)
             {
-                WriteErrorLog(ex);
-                return;
+                WriteErrorLog(ex);                
             }
         }
 
@@ -190,8 +188,7 @@ namespace SmartRecorder
             }
             if (shutDownRequired)
             {
-                if (Application.Current != null)
-                    Application.Current.Shutdown(110);
+                Process.GetCurrentProcess().Kill();
             }
         }
     }
