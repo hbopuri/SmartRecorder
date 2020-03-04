@@ -39,7 +39,7 @@ namespace SmartRecorder
             {
                 string cameraName = ConfigurationManager.AppSettings["CameraName"].ToString();
                 string fileDirPath = null;
-                string ssnFileName = null;
+                string ssnFileName = "NoSession";
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
                 if (!Directory.Exists(_fileBasePath))
@@ -56,7 +56,12 @@ namespace SmartRecorder
 
                 try
                 {
-                    ssnFileName = Path.GetFileNameWithoutExtension(new DirectoryInfo(_fileBasePath).GetFiles("*.ssn").OrderByDescending(o => o.LastWriteTime).FirstOrDefault().Name);
+                    if(Directory.Exists(_fileBasePath))
+                        ssnFileName = Path.GetFileNameWithoutExtension(
+                            new DirectoryInfo(_fileBasePath)
+                            .GetFiles("*.ssn")
+                            .OrderByDescending(o => o.LastWriteTime)
+                            .FirstOrDefault()?.Name) ?? "NoSession";
                 }
                 catch
                 {
@@ -87,10 +92,8 @@ namespace SmartRecorder
                 _stopWatch.Start();
                 _videoCaptureDevice.Start();
 
-                if (ssnFileName == null)
-                    ssnFileName = string.Empty;
-                else
-                    ssnFileName = ssnFileName + "_";
+
+                ssnFileName = ssnFileName + "_";
 
                 string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".mp4");
                 _fileWriter.Open(filePath, 1280, 720, 25, VideoCodec.MPEG4, 500000);
