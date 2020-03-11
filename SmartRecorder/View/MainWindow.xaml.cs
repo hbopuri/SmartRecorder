@@ -23,12 +23,22 @@ namespace SmartRecorder
 
         private VideoCaptureDevice _videoCaptureDevice = null;
         private VideoFileWriter _fileWriter = new VideoFileWriter();
-        private bool _recording = false;
-        private long? _startTick = null;
-        private Stopwatch _stopWatch;
+        //private long? _startTick = null;
+        //private Stopwatch _stopWatch;
         private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
-
+        private int? _quality;
         public MainWindow()
+        {
+            _quality = null;
+            Init();
+        }
+        public MainWindow(int qualityId)
+        {
+            _quality = qualityId;
+            Init();
+        }
+
+        void Init()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
@@ -44,7 +54,7 @@ namespace SmartRecorder
 
                 if (!Directory.Exists(_fileBasePath))
                 {
-                    WriteErrorLog(null, "Video file path not configured! - " + _fileBasePath, false, false);
+                    ErrorLogger.LogError(null, "Video file path not configured! - " + _fileBasePath, false, false);
                     fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
                     if (!Directory.Exists(fileDirPath))
                         Directory.CreateDirectory(fileDirPath);
@@ -56,7 +66,7 @@ namespace SmartRecorder
 
                 try
                 {
-                    if(Directory.Exists(_fileBasePath))
+                    if (Directory.Exists(_fileBasePath))
                         ssnFileName = Path.GetFileNameWithoutExtension(
                             new DirectoryInfo(_fileBasePath)
                             .GetFiles("*.ssn")
@@ -65,12 +75,12 @@ namespace SmartRecorder
                 }
                 catch
                 {
-                    WriteErrorLog(null, ".ssn file not exists! - " + _fileBasePath, false, false);
+                    ErrorLogger.LogError(null, ".ssn file not exists! - " + _fileBasePath, false, false);
                 }
 
                 if (_videoCaptureDevices.Count == 0)
                 {
-                    WriteErrorLog(null, "No camera Attached.");
+                    ErrorLogger.LogError(null, "No camera Attached.");
                 }
 
                 for (int i = 0; i < _videoCaptureDevices.Count; i++)
@@ -81,26 +91,52 @@ namespace SmartRecorder
 
                 if (_videoCaptureDevice == null)
                 {
-                    WriteErrorLog(null, "No camera with name " + cameraName + " attached!");
+                    ErrorLogger.LogError(null, "No camera with name " + cameraName + " attached!");
                 }
-                _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[8];
+
+                //if(_quality == null)
+                //{
+                //    _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[0];
+                //}
+                //else
+                //{
+                //    _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[_quality.Value];
+                //}
+
+                _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities.FirstOrDefault(o => o.FrameSize.Width == 320 && o.FrameSize.Height == 240);
+
+                if (_videoCaptureDevice.VideoResolution == null)
+                {
+                    ErrorLogger.LogError(null, "The camera must support 0.08MP, " + cameraName, true, true);
+                }
+
                 _videoCaptureDevice.NewFrame += new NewFrameEventHandler(video_NewFrame);
-                _recording = true;
-                _stopWatch = new Stopwatch();
-                _stopWatch.Start();
+                //_stopWatch = new Stopwatch();
+                //_stopWatch.Start();
                 _videoCaptureDevice.Start();
 
 
                 ssnFileName = ssnFileName + "_";
 
-                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".avi");
-                _fileWriter.Open(filePath, _videoCaptureDevice.VideoResolution.FrameSize.Width,
-                    _videoCaptureDevice.VideoResolution.FrameSize.Height,
-                    _videoCaptureDevice.VideoResolution.AverageFrameRate, VideoCodec.MSMPEG4v3, 30);
+                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".wmv");
+                int bitCount = 100000;
+                switch (_quality)
+                {
+                    case 1:
+                        bitCount = 550000;
+                        break;
+                    case 2:
+                        bitCount = 350000;
+                        break;
+                    case 3:
+                        bitCount = 100000;
+                        break;
+                }
+                _fileWriter.Open(filePath, _videoCaptureDevice.VideoResolution.FrameSize.Width, _videoCaptureDevice.VideoResolution.FrameSize.Height, 25, VideoCodec.WMV2, bitCount);
             }
             catch (Exception ex)
             {
-                WriteErrorLog(ex);
+                ErrorLogger.LogError(ex);
             }
         }
 
@@ -123,25 +159,24 @@ namespace SmartRecorder
                         imgVideoFrameHolder.Source = bitmapImage;
                     }));
 
-                    if (_recording)
-                    {
-                        long currentTick = DateTime.Now.Ticks;
-                        _startTick = _startTick ?? currentTick;
-                        var frameOffset = new TimeSpan(currentTick - _startTick.Value);
+                    _fileWriter.WriteVideoFrame(eventArgs.Frame);
 
-                        double elapsedTimeInSeconds = _stopWatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                        double timeBetweenFramesInSeconds = 1.0 / 25;
-                        if (elapsedTimeInSeconds >= timeBetweenFramesInSeconds)
-                        {
-                            _stopWatch.Restart();
-                            _fileWriter.WriteVideoFrame(eventArgs.Frame, frameOffset);
-                        }
-                    }
+                    //long currentTick = DateTime.Now.Ticks;
+                    //_startTick = _startTick ?? currentTick;
+                    //var frameOffset = new TimeSpan(currentTick - _startTick.Value);
+
+                    //double elapsedTimeInSeconds = _stopWatch.ElapsedTicks / (double)Stopwatch.Frequency;
+                    //double timeBetweenFramesInSeconds = 1.0 / 25;
+                    //if (elapsedTimeInSeconds >= timeBetweenFramesInSeconds)
+                    //{
+                    //    _stopWatch.Restart();
+                    //    _fileWriter.WriteVideoFrame(eventArgs.Frame, frameOffset);
+                    //}
                 }
             }
             catch (Exception ex)
             {
-                WriteErrorLog(ex);                
+                ErrorLogger.LogError(ex);
             }
         }
 
@@ -157,40 +192,8 @@ namespace SmartRecorder
             }
             catch (Exception ex)
             {
-                WriteErrorLog(ex);
-            }
-        }
-
-        private void WriteErrorLog(Exception ex, string nonExceptionMessage = null, bool messageRequired = true, bool shutDownRequired = true)
-        {
-            var directoryPath = Path.Combine(Path.GetTempPath(), "Smart Structures", "Smart Recorder");
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-            var logPath = Path.Combine(directoryPath, "Log.txt");
-            if (!File.Exists(logPath))
-            {
-                File.Create(logPath).Dispose();
-            }
-            using (StreamWriter writer = File.AppendText(logPath))
-            {
-                if (ex != null)
-                {
-                    if (messageRequired)
-                        MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
-                    writer.WriteLine(DateTime.UtcNow + " - " + "exception" + " - " + ex.Message);
-                }
-                if (!string.IsNullOrEmpty(nonExceptionMessage))
-                {
-                    if (messageRequired)
-                        MessageBox.Show(DateTime.UtcNow + " - " + "exception" + " - " + nonExceptionMessage, "Smart Recorder", MessageBoxButton.OK, MessageBoxImage.Error);
-                    writer.WriteLine(DateTime.UtcNow + " - " + "non-exception" + " - " + nonExceptionMessage);
-                }
-            }
-            if (shutDownRequired)
-            {
-                Process.GetCurrentProcess().Kill();
+                ErrorLogger.LogError(ex);
             }
         }
     }
-
 }
