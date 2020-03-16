@@ -53,6 +53,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\AForge.Video.FFMPEG.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Smart.Core.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\Smart.Core.Utilities.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -140,6 +147,9 @@
     <Content Include="Lib\avformat-53.dll" />
     <Content Include="Lib\avutil-51.dll" />
     <Content Include="Lib\postproc-52.dll" />
+    <Content Include="Lib\Smart.Core.Utilities.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Lib\swresample-0.dll" />
     <Content Include="Lib\swscale-2.dll" />
     <Resource Include="ss_icon.ico" />

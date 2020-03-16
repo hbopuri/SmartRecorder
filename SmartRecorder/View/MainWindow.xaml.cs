@@ -1,6 +1,9 @@
 ﻿using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Video.FFMPEG;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Smart.Core.Utilities;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -47,7 +50,7 @@ namespace SmartRecorder
         {
             try
             {
-                string cameraName = ConfigurationManager.AppSettings["CameraName"].ToString();
+                string cameraName = JObject.Parse(CryptAES.DecryptString("030DA110-A9D1-4258-940F-CDC904313F7F", File.ReadAllText(ConfigurationManager.AppSettings["SPIConfigFilePath"].ToString())))["SmartRecorderCamera"].ToString();
                 string fileDirPath = null;
                 string ssnFileName = "NoSession";
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
@@ -136,7 +139,7 @@ namespace SmartRecorder
             }
             catch (Exception ex)
             {
-                ErrorLogger.LogError(ex);
+                ErrorLogger.LogError(ex, null, true, true);
             }
         }
 
