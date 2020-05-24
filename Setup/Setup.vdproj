@@ -21,31 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_11B57466C56D70D1440ECA0FFBC916FA"
-        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_11B57466C56D70D1440ECA0FFBC916FA"
-        "OwnerKey" = "8:_1A218BBCECD197DBC58E50D37A9BC43C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_11B57466C56D70D1440ECA0FFBC916FA"
-        "OwnerKey" = "8:_BD03F929154D978F52F3104177580B53"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_1703AEFB18DF99715E639F6C46DFB1AF"
         "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_1A218BBCECD197DBC58E50D37A9BC43C"
+        "MsmKey" = "8:_1E86CE5B880046DECF099FCCDBBD485B"
         "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -57,8 +39,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_22528879CA54686AE89F4C8989DABD88"
+        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3A390F69AA974D798D2F85EBD9EA8C0B"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4290C72FB242D28D4E32A884C9268640"
+        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -75,14 +69,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_54CFE716D26B7FFE67B16881BD117E6C"
-        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
+        "MsmKey" = "8:_6A9E1BF72C254FB8B704F978C8D0701F"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6A9E1BF72C254FB8B704F978C8D0701F"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_6AE1691E7A7E8B295DAED6C30ECC26F8"
+        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -99,8 +93,38 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BD03F929154D978F52F3104177580B53"
+        "MsmKey" = "8:_CC20ACCED910A8DC69FD7214E0D0FA78"
         "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CC20ACCED910A8DC69FD7214E0D0FA78"
+        "OwnerKey" = "8:_22528879CA54686AE89F4C8989DABD88"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CC20ACCED910A8DC69FD7214E0D0FA78"
+        "OwnerKey" = "8:_6AE1691E7A7E8B295DAED6C30ECC26F8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D97B69D13C206F1C58EB4DD3735E04B2"
+        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DD414CA856D2742EE761EECB9EA0C4F6"
+        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DD414CA856D2742EE761EECB9EA0C4F6"
+        "OwnerKey" = "8:_CC20ACCED910A8DC69FD7214E0D0FA78"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -123,18 +147,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F3CC54CF5F0CF246BCCE903BF600237B"
-        "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F3CC54CF5F0CF246BCCE903BF600237B"
-        "OwnerKey" = "8:_11B57466C56D70D1440ECA0FFBC916FA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_FA9F6567C9B0FBF81AA27FCF73E8EEFB"
         "OwnerKey" = "8:_522BD5A633B84E049422BE95BBA66935"
         "MsmSig" = "8:_UNDEFINED"
@@ -148,31 +160,43 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_1A218BBCECD197DBC58E50D37A9BC43C"
+        "OwnerKey" = "8:_1E86CE5B880046DECF099FCCDBBD485B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_54CFE716D26B7FFE67B16881BD117E6C"
+        "OwnerKey" = "8:_22528879CA54686AE89F4C8989DABD88"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BD03F929154D978F52F3104177580B53"
+        "OwnerKey" = "8:_4290C72FB242D28D4E32A884C9268640"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_11B57466C56D70D1440ECA0FFBC916FA"
+        "OwnerKey" = "8:_D97B69D13C206F1C58EB4DD3735E04B2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F3CC54CF5F0CF246BCCE903BF600237B"
+        "OwnerKey" = "8:_6AE1691E7A7E8B295DAED6C30ECC26F8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CC20ACCED910A8DC69FD7214E0D0FA78"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DD414CA856D2742EE761EECB9EA0C4F6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -308,37 +332,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_11B57466C56D70D1440ECA0FFBC916FA"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_11B57466C56D70D1440ECA0FFBC916FA"
-                    {
-                    "Name" = "8:AForge.Video.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:AForge.Video.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1703AEFB18DF99715E639F6C46DFB1AF"
             {
             "AssemblyRegister" = "3:1"
@@ -370,20 +363,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1A218BBCECD197DBC58E50D37A9BC43C"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1E86CE5B880046DECF099FCCDBBD485B"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AForge.Video.FFMPEG, Version=2.2.5.0, Culture=neutral, PublicKeyToken=03563089b1be05dd, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:Smart.Core.Utilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_1A218BBCECD197DBC58E50D37A9BC43C"
+                    "_1E86CE5B880046DECF099FCCDBBD485B"
                     {
-                    "Name" = "8:AForge.Video.FFMPEG.dll"
+                    "Name" = "8:Smart.Core.Utilities.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:AForge.Video.FFMPEG.dll"
+            "SourcePath" = "8:Smart.Core.Utilities.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
@@ -421,6 +414,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_22528879CA54686AE89F4C8989DABD88"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:AForge.Video.FFMPEG, Version=2.2.5.0, Culture=neutral, PublicKeyToken=03563089b1be05dd, processorArchitecture=x86"
+                "ScatterAssemblies"
+                {
+                    "_22528879CA54686AE89F4C8989DABD88"
+                    {
+                    "Name" = "8:AForge.Video.FFMPEG.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:AForge.Video.FFMPEG.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3A390F69AA974D798D2F85EBD9EA8C0B"
             {
             "SourcePath" = "8:..\\SmartRecorder\\ss_icon.ico"
@@ -441,34 +465,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5398194008004E4EA1C59B0EDBC3B8F7"
-            {
-            "SourcePath" = "8:..\\SmartRecorder\\Lib\\swresample-0.dll"
-            "TargetName" = "8:swresample-0.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_54CFE716D26B7FFE67B16881BD117E6C"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4290C72FB242D28D4E32A884C9268640"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_54CFE716D26B7FFE67B16881BD117E6C"
+                    "_4290C72FB242D28D4E32A884C9268640"
                     {
                     "Name" = "8:System.Drawing.Common.dll"
                     "Attributes" = "3:512"
@@ -492,6 +496,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5398194008004E4EA1C59B0EDBC3B8F7"
+            {
+            "SourcePath" = "8:..\\SmartRecorder\\Lib\\swresample-0.dll"
+            "TargetName" = "8:swresample-0.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A9E1BF72C254FB8B704F978C8D0701F"
             {
             "SourcePath" = "8:..\\SmartRecorder\\Lib\\swscale-2.dll"
@@ -510,6 +534,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6AE1691E7A7E8B295DAED6C30ECC26F8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:AForge.Video.DirectShow, Version=2.2.5.0, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6AE1691E7A7E8B295DAED6C30ECC26F8"
+                    {
+                    "Name" = "8:AForge.Video.DirectShow.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:AForge.Video.DirectShow.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_84E0B86DB9364FEC87334B1956A4E013"
@@ -563,20 +618,82 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BD03F929154D978F52F3104177580B53"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CC20ACCED910A8DC69FD7214E0D0FA78"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AForge.Video.DirectShow, Version=2.2.5.0, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:AForge.Video, Version=2.2.5.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BD03F929154D978F52F3104177580B53"
+                    "_CC20ACCED910A8DC69FD7214E0D0FA78"
                     {
-                    "Name" = "8:AForge.Video.DirectShow.dll"
+                    "Name" = "8:AForge.Video.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:AForge.Video.DirectShow.dll"
+            "SourcePath" = "8:AForge.Video.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D97B69D13C206F1C58EB4DD3735E04B2"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D97B69D13C206F1C58EB4DD3735E04B2"
+                    {
+                    "Name" = "8:Newtonsoft.Json.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Newtonsoft.Json.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DD414CA856D2742EE761EECB9EA0C4F6"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_DD414CA856D2742EE761EECB9EA0C4F6"
+                    {
+                    "Name" = "8:AForge.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:AForge.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
@@ -652,37 +769,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F3CC54CF5F0CF246BCCE903BF600237B"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_F3CC54CF5F0CF246BCCE903BF600237B"
-                    {
-                    "Name" = "8:AForge.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:AForge.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FA9F6567C9B0FBF81AA27FCF73E8EEFB"
@@ -904,34 +990,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C7339F7315A440A784955184BC44CD84"
-            {
-            "Name" = "8:Smart Recorder"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_522BD5A633B84E049422BE95BBA66935"
-            "Folder" = "8:_50387BDCEC794FBB8D930F644D4FC596"
-            "WorkingFolder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
-            "Icon" = "8:_3A390F69AA974D798D2F85EBD9EA8C0B"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D1068847A3C74AB3B44E74E2D1F047AC"
-            {
-            "Name" = "8:Smart Recorder"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_522BD5A633B84E049422BE95BBA66935"
-            "Folder" = "8:_1ACB143B80304B229F7660F81B981361"
-            "WorkingFolder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
-            "Icon" = "8:_3A390F69AA974D798D2F85EBD9EA8C0B"
-            "Feature" = "8:"
-            }
         }
         "UserInterface"
         {
