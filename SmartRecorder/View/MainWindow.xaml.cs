@@ -4,8 +4,10 @@ using AForge.Video.FFMPEG;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Smart.Core.Utilities;
+using SmartRecorder.Helper;
 using System;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -28,7 +30,8 @@ namespace SmartRecorder
         private VideoFileWriter _fileWriter = new VideoFileWriter();
         //private long? _startTick = null;
         //private Stopwatch _stopWatch;
-        private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
+
+        private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
         private int? _quality;
         public MainWindow()
         {
@@ -50,7 +53,13 @@ namespace SmartRecorder
         {
             try
             {
-                string cameraName = JObject.Parse(CryptAES.DecryptString("030DA110-A9D1-4258-940F-CDC904313F7F", File.ReadAllText(ConfigurationManager.AppSettings["SPIConfigFilePath"].ToString())))["SmartRecorderCamera"].ToString();
+                var productAppExeName = "SmartPileInspector.exe";
+                var appConfigPath = CameraHelper.GetAllInstalledSoftware(productAppExeName);
+                if (appConfigPath != null && !File.Exists(appConfigPath))
+                    return;
+                var appConfig = JObject.Parse(CryptAES.DecryptString("030DA110-A9D1-4258-940F-CDC904313F7F", File.ReadAllText(Path.Combine(Path.GetDirectoryName(appConfigPath),"App.config"))));
+                string cameraName = appConfig["Camera"]["Name"].ToString();
+                var sqlConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=True", appConfig["Database"]["Instance"].ToString(), appConfig["Database"]["Catalog"].ToString());
                 string fileDirPath = null;
                 string ssnFileName = "NoSession";
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
@@ -58,7 +67,7 @@ namespace SmartRecorder
                 if (!Directory.Exists(_fileBasePath))
                 {
                     ErrorLogger.LogError(null, "Video file path not configured! - " + _fileBasePath, false, false);
-                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["AppDataSubFolderPath"].ToString());
+                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
                     if (!Directory.Exists(fileDirPath))
                         Directory.CreateDirectory(fileDirPath);
                 }
@@ -67,18 +76,28 @@ namespace SmartRecorder
                     fileDirPath = _fileBasePath;
                 }
 
+                SqlConnection conn = new SqlConnection(sqlConnectionString);
                 try
                 {
-                    if (Directory.Exists(_fileBasePath))
-                        ssnFileName = Path.GetFileNameWithoutExtension(
-                            new DirectoryInfo(_fileBasePath)
-                            .GetFiles("*.ssn")
-                            .OrderByDescending(o => o.LastWriteTime)
-                            .FirstOrDefault()?.Name) ?? "NoSession";
+                    string selectSql = "select top 1 * from Sessions order by LastModifiedOnUtc desc ";
+                    SqlCommand cmd = new SqlCommand(selectSql, conn);
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ssnFileName = reader["SessionKey"].ToString();
+                            break;
+                        }
+                    }
                 }
                 catch
                 {
-                    ErrorLogger.LogError(null, ".ssn file not exists! - " + _fileBasePath, false, false);
+                    ErrorLogger.LogError(null, "Sql Connection Failed! - " + _fileBasePath, false, false);
+                }
+                finally
+                {
+                    conn.Close();
                 }
 
                 if (_videoCaptureDevices.Count == 0)
