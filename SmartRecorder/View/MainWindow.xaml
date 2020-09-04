@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmartRecorder"
         mc:Ignorable="d"
-        Title="Smart Recorder" Height="270" Width="330" Closing="Window_Closing" WindowState="Minimized" WindowStyle="ThreeDBorderWindow" Icon="/SmartRecorder;component/ss_icon.ico">
+        Title="Smart Recorder" Height="270" Width="330" Closing="Window_Closing" WindowState="Normal" WindowStyle="ThreeDBorderWindow" Icon="/SmartRecorder;component/ss_icon.ico">
     <Grid>
         <Image HorizontalAlignment="Stretch" x:Name="imgVideoFrameHolder"  VerticalAlignment="Stretch"  Stretch="Fill" Width="320" Height="240"/>
     </Grid>

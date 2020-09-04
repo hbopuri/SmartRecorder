@@ -1,9 +1,16 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace SmartRecorder.Helper
 {
@@ -19,12 +26,34 @@ namespace SmartRecorder.Helper
                     return System.IO.Path.Combine(path, "app.config");
                 return path;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogger.LogError(null, "ConfigFile Not Found.");
                 return null;
             }
         }
+
+        public static Bitmap Stamp(Bitmap bitmap, DateTime date, string dateFormat)
+        {
+            string stampString;
+            if (!string.IsNullOrEmpty(dateFormat))
+            {
+                stampString = date.ToString(dateFormat);
+            }
+            else
+            {
+                stampString = date.ToString();
+            }
+
+            Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.FillRectangle(System.Drawing.Brushes.Black, 0, 0, 130, 20);
+
+            graphics.DrawString(stampString, new Font("Arial", 8f), System.Drawing.Brushes.White, 2, 2);
+
+            return bitmap;
+        }
+
+
 
     }
 }

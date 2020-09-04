@@ -18,10 +18,10 @@ namespace SmartRecorder
             MainWindow mainWindow = new MainWindow();
             if (e.Args.Count() > 0)
             {
-                int resolutionId;
-                if (int.TryParse(e.Args[0], out resolutionId))
+                Guid resolutionId;
+                if (Guid.TryParse(e.Args[0], out resolutionId))
                 {
-                    mainWindow = new MainWindow(Convert.ToInt32(resolutionId));
+                    mainWindow = new MainWindow(resolutionId);
                 }
                 else
                 {
