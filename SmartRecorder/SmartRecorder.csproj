@@ -99,6 +99,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CameraSettings.cs" />
     <Compile Include="CaptureElement.cs" />
     <Compile Include="ErrorLogger.cs" />
     <Compile Include="Helper\CameraHelper.cs" />

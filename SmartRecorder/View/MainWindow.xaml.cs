@@ -13,8 +13,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace SmartRecorder
@@ -28,19 +31,20 @@ namespace SmartRecorder
 
         private VideoCaptureDevice _videoCaptureDevice = null;
         private VideoFileWriter _fileWriter = new VideoFileWriter();
+        string _projectUid = Guid.Empty.ToString();
+        SmartRecorderSettings settings = new SmartRecorderSettings();
+        bool printTimeStamp = false;
         //private long? _startTick = null;
         //private Stopwatch _stopWatch;
 
         private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
-        private int? _quality;
         public MainWindow()
         {
-            _quality = null;
             Init();
         }
-        public MainWindow(int qualityId)
+        public MainWindow(Guid projectUid)
         {
-            _quality = qualityId;
+            _projectUid = projectUid.ToString();
             Init();
         }
 
@@ -53,107 +57,123 @@ namespace SmartRecorder
         {
             try
             {
-                var productAppExeName = "SmartPileInspector.exe";
-                var appConfigPath = CameraHelper.GetAllInstalledSoftware(productAppExeName);
-                if (appConfigPath != null && !File.Exists(appConfigPath))
+                string configFile = $@"C:\Users\Public\Smart Structures\Smart Recorder\Settings\{_projectUid}.json";
+                if (!File.Exists(configFile))
+                {
+                    ErrorLogger.LogError(null, "Config file not available!", false, false);
                     return;
-                var appConfig = JObject.Parse(CryptAES.DecryptString("030DA110-A9D1-4258-940F-CDC904313F7F", File.ReadAllText(Path.Combine(Path.GetDirectoryName(appConfigPath),"App.config"))));
-                string cameraName = appConfig["Camera"]["Name"].ToString();
-                var sqlConnectionString = string.Format("Data Source={0};Initial Catalog={1};Integrated Security=True", appConfig["Database"]["Instance"].ToString(), appConfig["Database"]["Catalog"].ToString());
-                string fileDirPath = null;
-                string ssnFileName = "NoSession";
+                }
+                string appconfig = File.ReadAllText(configFile);
+                settings = JsonConvert.DeserializeObject<SmartRecorderSettings>(appconfig);
+
+                printTimeStamp = settings.PrintTimeStamp;
+
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-
-                if (!Directory.Exists(_fileBasePath))
-                {
-                    ErrorLogger.LogError(null, "Video file path not configured! - " + _fileBasePath, false, false);
-                    fileDirPath = Path.Combine(Path.GetTempPath(), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
-                    if (!Directory.Exists(fileDirPath))
-                        Directory.CreateDirectory(fileDirPath);
-                }
-                else
-                {
-                    fileDirPath = _fileBasePath;
-                }
-
-                SqlConnection conn = new SqlConnection(sqlConnectionString);
-                try
-                {
-                    string selectSql = "select top 1 * from Sessions order by LastModifiedOnUtc desc ";
-                    SqlCommand cmd = new SqlCommand(selectSql, conn);
-                    conn.Open();
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            ssnFileName = reader["SessionKey"].ToString();
-                            break;
-                        }
-                    }
-                }
-                catch
-                {
-                    ErrorLogger.LogError(null, "Sql Connection Failed! - " + _fileBasePath, false, false);
-                }
-                finally
-                {
-                    conn.Close();
-                }
 
                 if (_videoCaptureDevices.Count == 0)
                 {
                     ErrorLogger.LogError(null, "No camera Attached.");
+                    return;
                 }
 
+                if (string.IsNullOrWhiteSpace(settings.OutputPath))
+                {
+                    ErrorLogger.LogError(null, "Video file path not configured!", false, false);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(settings.Camera))
+                {
+                    ErrorLogger.LogError(null, "Camera not configured!", false, false);
+                    return;
+                }
+
+                if (settings.SessionKey == Guid.Empty)
+                {
+                    ErrorLogger.LogError(null, "SessionKey not configured!", false, false);
+                    return;
+                }
+
+                string ssnFileName = settings.SessionKey.ToString();
+                try
+                {
+                    if (!Directory.Exists(settings.OutputPath))
+                        Directory.CreateDirectory(settings.OutputPath);
+                }
+                catch (Exception ex)
+                {
+                    settings.OutputPath = _fileBasePath;
+                    if (!Directory.Exists(settings.OutputPath))
+                        Directory.CreateDirectory(settings.OutputPath);
+                }
                 for (int i = 0; i < _videoCaptureDevices.Count; i++)
                 {
-                    if (_videoCaptureDevices[i].Name == cameraName)
+                    if (_videoCaptureDevices[i].Name == settings.Camera)
                         _videoCaptureDevice = new VideoCaptureDevice(_videoCaptureDevices[i].MonikerString);
                 }
 
                 if (_videoCaptureDevice == null)
                 {
-                    ErrorLogger.LogError(null, "No camera with name " + cameraName + " attached!");
+                    ErrorLogger.LogError(null, "No camera with name " + settings.Camera + " attached!");
                 }
-
-                //if(_quality == null)
-                //{
-                //    _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[0];
-                //}
-                //else
-                //{
-                //    _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities[_quality.Value];
-                //}
 
                 _videoCaptureDevice.VideoResolution = _videoCaptureDevice.VideoCapabilities.FirstOrDefault(o => o.FrameSize.Width == 320 && o.FrameSize.Height == 240);
 
                 if (_videoCaptureDevice.VideoResolution == null)
                 {
-                    ErrorLogger.LogError(null, "The camera must support 0.08MP, " + cameraName, true, true);
+                    ErrorLogger.LogError(null, "The camera must support 0.08MP, " + settings.Camera, true, true);
                 }
 
                 _videoCaptureDevice.NewFrame += new NewFrameEventHandler(video_NewFrame);
-                //_stopWatch = new Stopwatch();
-                //_stopWatch.Start();
                 _videoCaptureDevice.Start();
 
+                var rsystemWorkArea = SystemParameters.WorkArea;
 
-                ssnFileName = ssnFileName + "_";
-
-                string filePath = Path.Combine(fileDirPath, ssnFileName + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".wmv");
-                int bitCount = 100000;
-                switch (_quality)
+                switch (settings.Position)
                 {
-                    case 1:
+                    case SmartRecorderPosition.TopRight:
+                        Left = rsystemWorkArea.Right - ActualWidth;
+                        Top = 0;
+                        break;
+                    case SmartRecorderPosition.TopLeft:
+                        Left = 0;
+                        Top = 0;
+                        break;
+                    case SmartRecorderPosition.TopCenter:
+                        Left = rsystemWorkArea.Right - (ActualWidth / 2) - (rsystemWorkArea.Right / 2);
+                        Top = 0;
+                        break;
+                    case SmartRecorderPosition.BottomCenter:
+                        Left = rsystemWorkArea.Right - (ActualWidth / 2) - (rsystemWorkArea.Right / 2);
+                        Top = rsystemWorkArea.Bottom - ActualHeight;
+                        break;
+                    case SmartRecorderPosition.BottomLeft:
+                        Left = 0;
+                        Top = rsystemWorkArea.Bottom - ActualHeight;
+                        break;
+                    case SmartRecorderPosition.BottomRight:
+                        Left = rsystemWorkArea.Right - ActualWidth;
+                        Top = rsystemWorkArea.Bottom - ActualHeight;
+                        break;
+                }
+
+                ssnFileName = ssnFileName + "_" + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".wmv";
+                string filePath = Path.Combine(settings.OutputPath, ssnFileName);
+
+                int bitCount = 100000;
+                switch (settings.Quality)
+                {
+                    case SmartVideoQuality.Best:
                         bitCount = 550000;
                         break;
-                    case 2:
+                    case SmartVideoQuality.Medium:
                         bitCount = 350000;
                         break;
-                    case 3:
+                    case SmartVideoQuality.Low:
                         bitCount = 100000;
                         break;
                 }
+
                 _fileWriter.Open(filePath, _videoCaptureDevice.VideoResolution.FrameSize.Width, _videoCaptureDevice.VideoResolution.FrameSize.Height, 25, VideoCodec.WMV2, bitCount);
             }
             catch (Exception ex)
@@ -167,6 +187,8 @@ namespace SmartRecorder
             try
             {
                 Bitmap img = (Bitmap)eventArgs.Frame.Clone();
+                if (printTimeStamp)
+                    img = CameraHelper.Stamp(img, DateTime.Now, "MM/dd/yyyy HH:mm:ss");
                 MemoryStream ms = new MemoryStream();
                 {
                     img.Save(ms, ImageFormat.Bmp);
@@ -181,7 +203,7 @@ namespace SmartRecorder
                         imgVideoFrameHolder.Source = bitmapImage;
                     }));
 
-                    _fileWriter.WriteVideoFrame(eventArgs.Frame);
+                    _fileWriter.WriteVideoFrame(img);
 
                     //long currentTick = DateTime.Now.Ticks;
                     //_startTick = _startTick ?? currentTick;
@@ -201,6 +223,8 @@ namespace SmartRecorder
                 ErrorLogger.LogError(ex);
             }
         }
+
+
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
