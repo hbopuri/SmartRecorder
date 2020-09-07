@@ -1,4 +1,7 @@
-﻿using AForge.Video;
+﻿//using Accord.Audio;
+//using Accord.Audio.Formats;
+//using Accord.DirectSound;
+using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Video.FFMPEG;
 using Newtonsoft.Json;
@@ -28,16 +31,21 @@ namespace SmartRecorder
     public partial class MainWindow : Window
     {
         private FilterInfoCollection _videoCaptureDevices;
-
+        private FilterInfoCollection _audioCapturingDevices;
         private VideoCaptureDevice _videoCaptureDevice = null;
         private VideoFileWriter _fileWriter = new VideoFileWriter();
-        string _projectUid = Guid.Empty.ToString();
+        //string _projectUid = Guid.Empty.ToString();
+        string _projectUid = "3fef12bc-51f2-4944-aedc-9f9cefc209fa";
         SmartRecorderSettings settings = new SmartRecorderSettings();
         bool printTimeStamp = false;
-        //private long? _startTick = null;
-        //private Stopwatch _stopWatch;
-
         private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
+        //private AudioCaptureDevice _audioCaptureDevice;
+        //private float[] _audioBuffer;
+        //private MemoryStream _audioStream;
+        //private WaveEncoder _audioEncoder;
+
+        [DllImport("winmm.dll", EntryPoint = "mciSendStringA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+        private static extern int mciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
         public MainWindow()
         {
             Init();
@@ -60,7 +68,7 @@ namespace SmartRecorder
                 string configFile = $@"C:\Users\Public\Smart Structures\Smart Recorder\Settings\{_projectUid}.json";
                 if (!File.Exists(configFile))
                 {
-                    ErrorLogger.LogError(null, "Config file not available!", false, false);
+                    ErrorLogger.LogError(null, "Config file not available!", true, true);
                     return;
                 }
                 string appconfig = File.ReadAllText(configFile);
@@ -69,10 +77,17 @@ namespace SmartRecorder
                 printTimeStamp = settings.PrintTimeStamp;
 
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+                _audioCapturingDevices = new FilterInfoCollection(FilterCategory.AudioInputDevice);
 
                 if (_videoCaptureDevices.Count == 0)
                 {
                     ErrorLogger.LogError(null, "No camera Attached.");
+                    return;
+                }
+
+                if (_audioCapturingDevices.Count == 0 && settings.CaptureAudio)
+                {
+                    ErrorLogger.LogError(null, "No Mic Attached.");
                     return;
                 }
 
@@ -112,6 +127,25 @@ namespace SmartRecorder
                         _videoCaptureDevice = new VideoCaptureDevice(_videoCaptureDevices[i].MonikerString);
                 }
 
+                //for (int i = 0; i < _audioCapturingDevices.Count; i++)
+                //{
+                //    if (_audioCapturingDevices[i].Name == settings.Mic)
+                //    {
+                //        _audioCaptureDevice = new AudioCaptureDevice()
+                //        {
+                //            DesiredFrameSize = 4096,
+                //            SampleRate = 22050,
+                //            Format = SampleFormat.Format16Bit
+                //        };
+                //        _audioCaptureDevice.NewFrame += _audioCaptureDevice_NewFrame;
+                //        _audioBuffer = new float[_audioCaptureDevice.DesiredFrameSize];
+                //        _audioStream = new MemoryStream();
+                //        _audioEncoder = new WaveEncoder(_audioStream);
+                //        _audioCaptureDevice.Start();
+                //        break;
+                //    }
+                //}
+
                 if (_videoCaptureDevice == null)
                 {
                     ErrorLogger.LogError(null, "No camera with name " + settings.Camera + " attached!");
@@ -126,6 +160,8 @@ namespace SmartRecorder
 
                 _videoCaptureDevice.NewFrame += new NewFrameEventHandler(video_NewFrame);
                 _videoCaptureDevice.Start();
+
+
 
                 var rsystemWorkArea = SystemParameters.WorkArea;
 
@@ -182,7 +218,12 @@ namespace SmartRecorder
             }
         }
 
-        private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        //private void _audioCaptureDevice_NewFrame(object sender, Accord.Audio.NewFrameEventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        private void video_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
         {
             try
             {
