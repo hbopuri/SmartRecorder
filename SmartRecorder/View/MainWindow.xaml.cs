@@ -45,7 +45,11 @@ namespace SmartRecorder
         //private WaveEncoder _audioEncoder;
 
         [DllImport("winmm.dll", EntryPoint = "mciSendStringA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-        private static extern int mciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
+        private static extern int MciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
+
+        [DllImport("winmm.dll", EntryPoint = "mciSendStringA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
+        private static extern int Record(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
+
         public MainWindow()
         {
             Init();
@@ -65,7 +69,9 @@ namespace SmartRecorder
         {
             try
             {
-                string configFile = $@"C:\Users\Public\Smart Structures\Smart Recorder\Settings\{_projectUid}.json";
+                var configDirectory  = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments).Replace("Public Documents", "Smart Structures");
+                configDirectory = Path.Combine(configDirectory, "Smart Recorder", "Settings");
+                string configFile = Path.Combine(configDirectory, _projectUid + ".json");
                 if (!File.Exists(configFile))
                 {
                     ErrorLogger.LogError(null, "Config file not available!", true, true);
@@ -158,7 +164,9 @@ namespace SmartRecorder
                     ErrorLogger.LogError(null, "The camera must support 0.08MP, " + settings.Camera, true, true);
                 }
 
-                _videoCaptureDevice.NewFrame += new NewFrameEventHandler(video_NewFrame);
+                _videoCaptureDevice.NewFrame += new NewFrameEventHandler(Video_NewFrame);
+                Record("open new Type waveaudio Alias recsound", "", 0, 0);
+                Record("record recsound", "", 0, 0);
                 _videoCaptureDevice.Start();
 
 
@@ -223,7 +231,7 @@ namespace SmartRecorder
         //    throw new NotImplementedException();
         //}
 
-        private void video_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
+        private void Video_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
         {
             try
             {
@@ -274,6 +282,11 @@ namespace SmartRecorder
                 if (_videoCaptureDevice != null)
                 {
                     _videoCaptureDevice.Stop();
+                    // merge audio with video
+                    //https://stackoverflow.com/a/53605040/942855
+
+                    Record("save recsound d:\\mic.wav", "", 0, 0);
+                    Record("close recsound", "", 0, 0);
                     _fileWriter.Close();
                 }
             }
