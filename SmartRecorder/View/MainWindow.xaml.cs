@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -44,15 +45,11 @@ namespace SmartRecorder
         private string _fileBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ConfigurationManager.AppSettings["VideoStoragePath"].ToString());
         private string _videoFilePath;
         private string _audioFilePath;
+        private bool _isAudioRecording;
         private BufferedWaveProvider _bufferedWaveProvider;
+        private Stopwatch _stopwatch;
 
-        //private AudioCaptureDevice _audioCaptureDevice;
-        //private float[] _audioBuffer;
-        //private MemoryStream _audioStream;
-        //private WaveEncoder _audioEncoder;
-
-        [DllImport("winmm.dll", EntryPoint = "mciSendStringA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
-        private static extern int mciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
+        public long? StartTick { get; private set; }
 
         public MainWindow()
         {
@@ -87,19 +84,12 @@ namespace SmartRecorder
                 printTimeStamp = settings.PrintTimeStamp;
 
                 _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-                //_audioCapturingDevices = new FilterInfoCollection(FilterCategory.AudioInputDevice);
 
                 if (_videoCaptureDevices.Count == 0)
                 {
                     ErrorLogger.LogError(null, "No camera Attached.");
                     return;
                 }
-
-                //if (_audioCapturingDevices.Count == 0 && settings.CaptureAudio)
-                //{
-                //    ErrorLogger.LogError(null, "No Mic Attached.");
-                //    return;
-                //}
 
                 if (string.IsNullOrWhiteSpace(settings.OutputPath))
                 {
@@ -118,7 +108,7 @@ namespace SmartRecorder
                     ErrorLogger.LogError(null, "SessionKey not configured!", false, false);
                     return;
                 }
-
+                _isAudioRecording = settings.CaptureAudio;
                 string ssnFileName = settings.SessionKey.ToString();
                 try
                 {
@@ -137,25 +127,6 @@ namespace SmartRecorder
                         _videoCaptureDevice = new VideoCaptureDevice(_videoCaptureDevices[i].MonikerString);
                 }
 
-                //for (int i = 0; i < _audioCapturingDevices.Count; i++)
-                //{
-                //    if (_audioCapturingDevices[i].Name == settings.Mic)
-                //    {
-                //        _audioCaptureDevice = new AudioCaptureDevice()
-                //        {
-                //            DesiredFrameSize = 4096,
-                //            SampleRate = 22050,
-                //            Format = SampleFormat.Format16Bit
-                //        };
-                //        _audioCaptureDevice.NewFrame += _audioCaptureDevice_NewFrame;
-                //        _audioBuffer = new float[_audioCaptureDevice.DesiredFrameSize];
-                //        _audioStream = new MemoryStream();
-                //        _audioEncoder = new WaveEncoder(_audioStream);
-                //        _audioCaptureDevice.Start();
-                //        break;
-                //    }
-                //}
-
                 if (_videoCaptureDevice == null)
                 {
                     ErrorLogger.LogError(null, "No camera with name " + settings.Camera + " attached!");
@@ -168,28 +139,28 @@ namespace SmartRecorder
                     ErrorLogger.LogError(null, "The camera must support 0.08MP, " + settings.Camera, true, true);
                 }
 
-                _videoCaptureDevice.NewFrame += new NewFrameEventHandler(Video_NewFrame);
-                //mciSendString("open new Type waveaudio Alias recsound", "", 0, 0);
-                //mciSendString("record recsound", "", 0, 0);
-
-
                 ssnFileName = ssnFileName + "_" + DateTimeOffset.Now.ToString("yyyyMMddHHmmss") + ".wmv";
                 _videoFilePath = Path.Combine(settings.OutputPath, ssnFileName);
-
-                _audioFilePath = Path.Combine(settings.OutputPath, ssnFileName.Replace("wmv", "mp3"));
-                _waveIn = new WaveIn();
-                _waveWriter = new WaveFileWriter(_audioFilePath, _waveIn.WaveFormat);
-                _waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(SendCaptureAudio);
-                _bufferedWaveProvider = new BufferedWaveProvider(_waveIn.WaveFormat)
-                {
-                    DiscardOnBufferOverflow = true
-                };
-                _waveIn.StartRecording();
+                _videoCaptureDevice.NewFrame += new NewFrameEventHandler(Video_NewFrame);
+                _stopwatch = new Stopwatch();
+                _stopwatch.Start();
                 _videoCaptureDevice.Start();
 
 
-                var rsystemWorkArea = SystemParameters.WorkArea;
+                if (_isAudioRecording)
+                {
+                    _audioFilePath = Path.Combine(settings.OutputPath, ssnFileName.Replace("wmv", "mp3"));
+                    _waveIn = new WaveIn();
+                    _waveWriter = new WaveFileWriter(_audioFilePath, _waveIn.WaveFormat);
+                    _waveIn.DataAvailable += new EventHandler<WaveInEventArgs>(SendCaptureAudio);
+                    _bufferedWaveProvider = new BufferedWaveProvider(_waveIn.WaveFormat)
+                    {
+                        DiscardOnBufferOverflow = true
+                    };
+                    _waveIn.StartRecording();
+                }
 
+                var rsystemWorkArea = SystemParameters.WorkArea;
                 switch (settings.Position)
                 {
                     case SmartRecorderPosition.TopRight:
@@ -218,7 +189,6 @@ namespace SmartRecorder
                         break;
                 }
 
-
                 int bitCount = 100000;
                 switch (settings.Quality)
                 {
@@ -243,9 +213,16 @@ namespace SmartRecorder
 
         private void SendCaptureAudio(object sender, WaveInEventArgs e)
         {
-            foreach (byte _byte in e.Buffer)
+            try
             {
-                _waveWriter.WriteByte(_byte);
+                foreach (byte _byte in e.Buffer)
+                {
+                    _waveWriter.WriteByte(_byte);
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -269,20 +246,20 @@ namespace SmartRecorder
                     {
                         imgVideoFrameHolder.Source = bitmapImage;
                     }));
+                    if (_videoCaptureDevice.IsRunning)
+                    {
+                        long currentTick = DateTime.Now.Ticks;
+                        StartTick = StartTick ?? currentTick;
+                        var frameOffset = new TimeSpan(currentTick - StartTick.Value);
 
-                    _fileWriter.WriteVideoFrame(img);
-
-                    //long currentTick = DateTime.Now.Ticks;
-                    //_startTick = _startTick ?? currentTick;
-                    //var frameOffset = new TimeSpan(currentTick - _startTick.Value);
-
-                    //double elapsedTimeInSeconds = _stopWatch.ElapsedTicks / (double)Stopwatch.Frequency;
-                    //double timeBetweenFramesInSeconds = 1.0 / 25;
-                    //if (elapsedTimeInSeconds >= timeBetweenFramesInSeconds)
-                    //{
-                    //    _stopWatch.Restart();
-                    //    _fileWriter.WriteVideoFrame(eventArgs.Frame, frameOffset);
-                    //}
+                        double elapsedTimeInSeconds = _stopwatch.ElapsedTicks / (double)Stopwatch.Frequency;
+                        double timeBetweenFramesInSeconds = 1.0 / 25;
+                        if (elapsedTimeInSeconds >= timeBetweenFramesInSeconds)
+                        {
+                            _stopwatch.Restart();
+                            _fileWriter.WriteVideoFrame(img, frameOffset);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -293,38 +270,35 @@ namespace SmartRecorder
 
         private void Mergefile(string wavefilepath, string videofilepath)
         {
-            string Path_FFMPEG = Path.Combine(CameraHelper.AssemblyDirectory,  "ffmpeg.exe");
+            string Path_FFMPEG = Path.Combine(CameraHelper.AssemblyDirectory, "ffmpeg.exe");
             string Wavefile = wavefilepath;
             string video1 = videofilepath;
             //string file = @"D:\Developments\video\text.txt";
-            
+
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
 
             try
             {
-                //ffmpeg -i clip.mp4 -itsoffset 0.150 -i clip.mp4 -vcodec copy -acodec copy -map 0:0 -map 1:1 output.mp4
-                // proc.StartInfo.Arguments = string.Format("-i {0} -itsoffset 0.000 -i {1} -vcodec copy -acodec copy -map 0:0 -map 1:0 {2}", video1, Wavefile, strResult);
-                //ffmpeg.exe -i 34281f36-302f-4611-a9af-336db39dc1a9_20200909165541.mp3 -i 34281f36-302f-4611-a9af-336db39dc1a9_20200909165541.wmv -shortest outPutFile1.mp4
-                proc.StartInfo.Arguments = string.Format("-i \"{0}\" -i \"{1}\" -shortest \"{2}\"", Wavefile, video1, video1.Replace(".wmv", ".mp4"));
+                if (_audioFilePath != null)
+                    proc.StartInfo.Arguments = string.Format("-i \"{0}\" -i \"{1}\" -shortest \"{2}\"", Wavefile, video1, video1.Replace(".wmv", ".mp4"));
+                else
+                    proc.StartInfo.Arguments = string.Format("-i \"{0}\" -shortest \"{1}\"", video1, video1.Replace(".wmv", ".mp4"));
                 proc.StartInfo.UseShellExecute = false;
                 proc.StartInfo.CreateNoWindow = true;
-                //proc.StartInfo.RedirectStandardOutput = true;
-                //proc.StartInfo.RedirectStandardError = true;
                 proc.StartInfo.FileName = Path_FFMPEG;
                 proc.Start();
-
-                //string StdOutVideo = proc.StandardOutput.ReadToEnd();
-                //string StdErrVideo = proc.StandardError.ReadToEnd();
+                
             }
-            catch { }
             finally
             {
                 proc.WaitForExit();
                 proc.Close();
+
+                if (_audioFilePath != null)
+                    File.Delete(wavefilepath);
+                File.Delete(videofilepath);
             }
-
         }
-
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -332,18 +306,21 @@ namespace SmartRecorder
             {
                 if (_videoCaptureDevice != null)
                 {
+
                     _videoCaptureDevice.Stop();
-                    _waveIn.StopRecording();
+                    _videoCaptureDevice.WaitForStop();
                     _fileWriter.Close();
 
-                    _waveIn.Dispose();
-                    _waveIn = null;
-                    _waveWriter.Close();
-                    _waveWriter = null;
+                    if (_isAudioRecording)
+                    {
+                        _waveIn.StopRecording();
+                        _waveIn.Dispose();
+                        _waveIn = null;
+                        _waveWriter.Close();
+                        _waveWriter = null;
+                    }
 
                     Mergefile(_audioFilePath, _videoFilePath);
-
-
                 }
             }
             catch (Exception ex)

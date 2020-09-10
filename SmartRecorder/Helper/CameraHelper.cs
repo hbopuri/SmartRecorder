@@ -47,10 +47,9 @@ namespace SmartRecorder.Helper
             }
 
             Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(System.Drawing.Brushes.Black, 0, 0, 130, 20);
-
+            var size = graphics.MeasureString(stampString, new Font("Arial", 8f));
+            graphics.FillRectangle(System.Drawing.Brushes.Black, 0, 0, size.Width + 1, size.Height + 3);
             graphics.DrawString(stampString, new Font("Arial", 8f), System.Drawing.Brushes.White, 2, 2);
-
             return bitmap;
         }
 
