@@ -306,7 +306,6 @@ namespace SmartRecorder
             {
                 if (_videoCaptureDevice != null)
                 {
-
                     _videoCaptureDevice.Stop();
                     _videoCaptureDevice.WaitForStop();
                     _fileWriter.Close();
@@ -322,6 +321,7 @@ namespace SmartRecorder
 
                     Mergefile(_audioFilePath, _videoFilePath);
                 }
+                System.Windows.Application.Current.Shutdown();
             }
             catch (Exception ex)
             {
