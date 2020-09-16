@@ -31,5 +31,6 @@ namespace SmartRecorder
         public SmartVideoQuality Quality { get; set; }
         public string OutputPath { get; set; }
         public Guid SessionKey { get; set; }
+        public bool IsPreviewMode { get; set; }
     }
 }

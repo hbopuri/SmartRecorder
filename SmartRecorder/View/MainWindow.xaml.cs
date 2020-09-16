@@ -46,6 +46,7 @@ namespace SmartRecorder
         private string _videoFilePath;
         private string _audioFilePath;
         private bool _isAudioRecording;
+        private bool _isPreviewMode;
         private BufferedWaveProvider _bufferedWaveProvider;
         private Stopwatch _stopwatch;
 
@@ -109,6 +110,7 @@ namespace SmartRecorder
                     return;
                 }
                 _isAudioRecording = settings.CaptureAudio;
+                _isPreviewMode = settings.IsPreviewMode;
                 string ssnFileName = settings.SessionKey.ToString();
                 try
                 {
@@ -147,7 +149,7 @@ namespace SmartRecorder
                 _videoCaptureDevice.Start();
 
 
-                if (_isAudioRecording)
+                if (_isAudioRecording && !_isPreviewMode)
                 {
                     _audioFilePath = Path.Combine(settings.OutputPath, ssnFileName.Replace("wmv", "mp3"));
                     _waveIn = new WaveIn();
@@ -203,7 +205,8 @@ namespace SmartRecorder
                         break;
                 }
 
-                _fileWriter.Open(_videoFilePath, _videoCaptureDevice.VideoResolution.FrameSize.Width, _videoCaptureDevice.VideoResolution.FrameSize.Height, 25, VideoCodec.WMV2, bitCount);
+                if (!_isPreviewMode)
+                    _fileWriter.Open(_videoFilePath, _videoCaptureDevice.VideoResolution.FrameSize.Width, _videoCaptureDevice.VideoResolution.FrameSize.Height, 25, VideoCodec.WMV2, bitCount);
             }
             catch (Exception ex)
             {
@@ -246,7 +249,7 @@ namespace SmartRecorder
                     {
                         imgVideoFrameHolder.Source = bitmapImage;
                     }));
-                    if (_videoCaptureDevice.IsRunning)
+                    if (_videoCaptureDevice.IsRunning && !_isPreviewMode)
                     {
                         long currentTick = DateTime.Now.Ticks;
                         StartTick = StartTick ?? currentTick;
@@ -287,7 +290,7 @@ namespace SmartRecorder
                 proc.StartInfo.CreateNoWindow = true;
                 proc.StartInfo.FileName = Path_FFMPEG;
                 proc.Start();
-                
+
             }
             finally
             {
@@ -310,16 +313,18 @@ namespace SmartRecorder
                     _videoCaptureDevice.WaitForStop();
                     _fileWriter.Close();
 
-                    if (_isAudioRecording)
+                    if (!_isPreviewMode)
                     {
-                        _waveIn.StopRecording();
-                        _waveIn.Dispose();
-                        _waveIn = null;
-                        _waveWriter.Close();
-                        _waveWriter = null;
+                        if (_isAudioRecording)
+                        {
+                            _waveIn.StopRecording();
+                            _waveIn.Dispose();
+                            _waveIn = null;
+                            _waveWriter.Close();
+                            _waveWriter = null;
+                        }
+                        Mergefile(_audioFilePath, _videoFilePath);
                     }
-
-                    Mergefile(_audioFilePath, _videoFilePath);
                 }
                 System.Windows.Application.Current.Shutdown();
             }

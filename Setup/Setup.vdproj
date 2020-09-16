@@ -938,15 +938,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Smart Recorder"
-        "ProductCode" = "8:{48AD712F-5229-41D1-ADC4-C1D5170E1472}"
-        "PackageCode" = "8:{7EE916F3-13B1-49E4-A54C-A2700DA6D283}"
+        "ProductCode" = "8:{33A19790-8A34-403E-898E-7A5D8DF3A9BA}"
+        "PackageCode" = "8:{F64AE18F-5117-4287-AE18-0B083AF3AA98}"
         "UpgradeCode" = "8:{75CE0996-4A95-4612-902B-A5C33F91422A}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.3"
+        "ProductVersion" = "8:1.0.4"
         "Manufacturer" = "8:Smart Structures"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1460,7 +1460,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_522BD5A633B84E049422BE95BBA66935"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\SmartRecorder\\obj\\Debug\\SmartRecorder.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7C8D42D888394AFB9072DAF8470E815F"
